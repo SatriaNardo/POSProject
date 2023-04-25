@@ -7,6 +7,7 @@ package posproject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -46,7 +47,7 @@ public class POSFrame extends javax.swing.JFrame {
                     
                     var harga = (float)daftarModel.getValueAt(baris, 3);
                     var jumlah = (int)daftarModel.getValueAt(baris, 4);
-                
+                    
                     var total = harga * jumlah;
                     daftarModel.setValueAt(total, baris, 5);
                 
@@ -103,6 +104,11 @@ public class POSFrame extends javax.swing.JFrame {
         kodeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 kodeTextFieldActionPerformed(evt);
+            }
+        });
+        kodeTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                kodeTextFieldKeyReleased(evt);
             }
         });
 
@@ -341,14 +347,23 @@ public class POSFrame extends javax.swing.JFrame {
             daftarModel.setValueAt(1, tempIndex, 4);
             daftarModel.setValueAt(barang.harga, tempIndex, 5);
         }
+        if (barang == null) {
+            JOptionPane.showMessageDialog(this,"Kode yang anda masukkan salah, Harap memastikan inputan anda diantara 1 sampai 4");
+        }
     }//GEN-LAST:event_kodeTextFieldActionPerformed
 
     private void dibayarTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dibayarTextFieldActionPerformed
         String dibayarString = dibayarTextField.getText();
         dibayarString = dibayarString.replace(",", "");
         
+        
+        
         var dibayar = Integer.valueOf(dibayarString);
         var kembalian = dibayar - totalBelanja;
+        if(kembalian < 0) {
+            JOptionPane.showMessageDialog(this,"Uang yang anda bayar kurang");
+            return;
+        }
         kembalianTextField.setText(String.format("%,d", kembalian));
         
         var transaksi = new Transaksi();
@@ -383,10 +398,22 @@ public class POSFrame extends javax.swing.JFrame {
     private void dibayarTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_dibayarTextFieldKeyReleased
         String dibayarString = dibayarTextField.getText();
         dibayarString = dibayarString.replace(",", "");
-        
+        try {
+        int check = Integer.parseInt(dibayarString);
+     
+        } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this,"Inputtan Anda Tidak Numerik");
+        return;
+        }
         var dibayarInput = Integer.valueOf(dibayarString);
         dibayarTextField.setText(String.format("%,d", dibayarInput));
     }//GEN-LAST:event_dibayarTextFieldKeyReleased
+
+    private void kodeTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kodeTextFieldKeyReleased
+        // TODO add your handling code here:
+        
+        
+    }//GEN-LAST:event_kodeTextFieldKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable daftarTable;
